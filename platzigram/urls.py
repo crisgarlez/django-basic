@@ -15,15 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django.http import HttpResponse
-from posts import views as posts_views
 
-def hello_world(request):
-    return HttpResponse('Hello, world!')
+from platzigram import views
+from posts import views as posts_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('hello-world', hello_world),
-
+    path('hello-world', views.hello_world),
+    path('hi', views.hi),
     path('posts/', posts_views.list_posts)
 ]
