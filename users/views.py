@@ -3,6 +3,14 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from users.forms import ProfileForm, SignupForm
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import DetailView
+
+from django.contrib.auth.models import User
+from posts.models import Post
+
+from django.urls import reverse
+
 @login_required
 def update_profile(request):
 
@@ -19,7 +27,8 @@ def update_profile(request):
             profile.picture = data['picture']
             profile.save()
 
-            return redirect('update_profile')
+            url = reverse('users:detail', kwargs={'username': request.user.username})
+            return redirect(url)
 
     else:
         form = ProfileForm()
@@ -71,3 +80,19 @@ def signup(request):
         template_name='users/signup.html',
         context={'form': form}
     )
+
+class UserDetailView(LoginRequiredMixin, DetailView):
+    """User detail view."""
+
+    template_name = 'users/detail.html'
+    slug_field = 'username'
+    slug_url_kwarg = 'username'
+    queryset = User.objects.all()
+    context_object_name = 'user'
+
+    def get_context_data(self, **kwargs):
+        """Add user's posts to context."""
+        context = super().get_context_data(**kwargs)
+        user = self.get_object()
+        context['posts'] = Post.objects.filter(user=user).order_by('-created')
+        return context
