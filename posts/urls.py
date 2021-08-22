@@ -8,5 +8,15 @@ urlpatterns = [
         name='feed'
     ),
 
-    path('posts/new/', views.create_post, name='create_post'),
+    path(
+        route='posts/new/',
+        view=views.CreatePostView.as_view(),
+        name='create'
+    ),
+
+    path(
+        route='posts/<int:pk>/',
+        view=views.PostDetailView.as_view(),
+        name='detail'
+    )
 ]
