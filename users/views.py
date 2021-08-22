@@ -44,7 +44,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
-            return redirect('feed')
+            return redirect('posts:feed')
         else:
             return render(request, 'users/login.html', {'error': 'Invalid username and password'})
 
@@ -54,7 +54,7 @@ def login_view(request):
 def logout_view(request):
 
     logout(request)
-    return redirect('login')
+    return redirect('users:login')
 
 def signup(request):
     """Sign up view."""
@@ -62,7 +62,7 @@ def signup(request):
         form = SignupForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('login')
+            return redirect('users:login')
     else:
         form = SignupForm()
 
